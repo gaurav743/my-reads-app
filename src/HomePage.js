@@ -1,31 +1,38 @@
 import React , { Component } from 'react'
-import { Route , Link } from 'react-router-dom'
-import * as BooksAPI from './BooksAPI'
+import { Link } from 'react-router-dom'
 import BooksList from './BooksList'
 
 class HomePage extends Component{
 
-    state = {
-      booksRead: [],
-      booksWantToRead: [],
-      booksCurrentlyReading: []
-    }
+    // state = {
+    //   booksRead: [],
+    //   booksWantToRead: [],
+    //   booksCurrentlyReading: []
+    // }
+  
 
-    componentDidMount(){
-      BooksAPI.getAll().then( (books) => {
-        console.log(books)
-        this.setState( () => {
-          booksRead: this.getBooksRead(books)
-          booksWantToRead: this.getBooksWantToRead(books)
-          booksCurrentlyReading: this.getBooksCurrentlyReading(books)
-        })
-      })
-    }
+    // componentDidMount(){
+    //   BooksAPI.getAll().then( (books) => {
+    //     this.setState( () => ({
+    //       booksRead: this.getBooksRead(books),
+    //       booksWantToRead: this.getBooksWantToRead(books),
+    //       booksCurrentlyReading: this.getBooksCurrentlyReading(books)
+    //     }))
+    //   })
+
+    //   console.log('Inside home page...............')
+    //   console.log(JSON.stringify(this.state.booksRead))
+    //   console.log(JSON.stringify(this.state.booksWantToRead))
+    //   console.log(JSON.stringify(this.state.booksCurrentlyReading))
+    // }
+
 
     getBooksRead = (books) => {
-      return books.filter(( book ) => {
-        return book.shelf === "read"
+      const booksToRead =  books.filter(( book ) => {
+         return book.shelf === "read"
       })
+
+      return booksToRead
     }
 
     getBooksWantToRead = (books) => {
@@ -41,8 +48,11 @@ class HomePage extends Component{
     }
 
     render(){
+        const booksRead = this.getBooksRead(this.props.books)
+        const booksWantToRead = this.getBooksWantToRead(this.props.books)
+        const booksCurrentlyReading = this.getBooksCurrentlyReading(this.props.books)
+
         return(
-          <Route exact path='/' render = { () => (
             <div className="list-books">
             <div className="list-books-title">
               <h1>MyReads</h1>
@@ -51,21 +61,21 @@ class HomePage extends Component{
               <div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Currently Reading</h2>
-                  <BooksList books = { this.state.booksCurrentlyReading}></BooksList>
+                    <BooksList books = { booksCurrentlyReading }></BooksList>
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Want to Read</h2>
-                  <BooksList books = { this.state.booksWantToRead }></BooksList>
+                    <BooksList books = { booksWantToRead }></BooksList>
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Read</h2>
-                  <BooksList books = { this.state.booksRead }></BooksList>
+                    <BooksList books = { booksRead }></BooksList>
                 </div>
               </div>
             </div>
-            <Link className="open-search" to='/search'> <button>Add a book</button></Link>
+            <Link className="open-search" to 
+            ='/search'> <button>Add a book</button></Link>
           </div>
-          )}></Route>
         )
     }
 } 
