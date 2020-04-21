@@ -4,7 +4,6 @@ class Book extends Component{
 
     render(){
         const { changeBookShelf } = this.props
-
         return(
             <div className="book">
                 <div className="book-top">
