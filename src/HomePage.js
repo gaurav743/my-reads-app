@@ -3,55 +3,8 @@ import { Link } from 'react-router-dom'
 import BooksList from './BooksList'
 
 class HomePage extends Component{
-
-    // state = {
-    //   booksRead: [],
-    //   booksWantToRead: [],
-    //   booksCurrentlyReading: []
-    // }
-  
-
-    // componentDidMount(){
-    //   BooksAPI.getAll().then( (books) => {
-    //     this.setState( () => ({
-    //       booksRead: this.getBooksRead(books),
-    //       booksWantToRead: this.getBooksWantToRead(books),
-    //       booksCurrentlyReading: this.getBooksCurrentlyReading(books)
-    //     }))
-    //   })
-
-    //   console.log('Inside home page...............')
-    //   console.log(JSON.stringify(this.state.booksRead))
-    //   console.log(JSON.stringify(this.state.booksWantToRead))
-    //   console.log(JSON.stringify(this.state.booksCurrentlyReading))
-    // }
-
-
-    getBooksRead = (books) => {
-      const booksToRead =  books.filter(( book ) => {
-         return book.shelf === "read"
-      })
-
-      return booksToRead
-    }
-
-    getBooksWantToRead = (books) => {
-      return books.filter(( book ) => {
-        return book.shelf === "wantToRead"
-      })
-    }
-
-    getBooksCurrentlyReading = (books) => {
-      return books.filter(( book ) => {
-        return book.shelf === "currentlyReading"
-      })
-    }
-
     render(){
-        const booksRead = this.getBooksRead(this.props.books)
-        const booksWantToRead = this.getBooksWantToRead(this.props.books)
-        const booksCurrentlyReading = this.getBooksCurrentlyReading(this.props.books)
-
+        const { booksCurrentlyReading, booksRead, booksWantToRead, changeBookShelf } = this.props
         return(
             <div className="list-books">
             <div className="list-books-title">
@@ -61,15 +14,15 @@ class HomePage extends Component{
               <div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Currently Reading</h2>
-                    <BooksList books = { booksCurrentlyReading }></BooksList>
+                    <BooksList changeBookShelf = { changeBookShelf } books = { booksCurrentlyReading }></BooksList>
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Want to Read</h2>
-                    <BooksList books = { booksWantToRead }></BooksList>
+                    <BooksList changeBookShelf = { changeBookShelf }  books = { booksWantToRead }></BooksList>
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Read</h2>
-                    <BooksList books = { booksRead }></BooksList>
+                    <BooksList changeBookShelf = { changeBookShelf }  books = { booksRead }></BooksList>
                 </div>
               </div>
             </div>
