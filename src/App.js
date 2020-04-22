@@ -7,23 +7,40 @@ import { Route } from 'react-router-dom'
 
 class BooksApp extends React.Component {
   state = {
-    books: []
+    books: [],
+    booksRead: [],
+    booksWantToRead: [],
+    booksCurrentlyReading: []
   }
 
   componentDidMount = () => {
+    this.getAllBooks()
+  }
+
+  getAllBooks = () => {
     BooksAPI.getAll().then( (books) => {
       this.setState(({
         books: books
       }))
+
+      this.getAllBookCategories()
     })
   }
 
+  getAllBookCategories = () => {
+    this.getBooksRead(this.state.books)
+    this.getBooksWantToRead(this.state.books)
+    this.getBooksCurrentlyReading(this.state.books)
+  }
+
   getBooksRead = (books) => {
-    const booksToRead =  books.filter(( book ) => {
+    const booksRead =  books.filter(( book ) => {
        return book.shelf === "read"
     })
 
-    return booksToRead
+    this.setState(({
+      booksRead
+    }))
   }
 
   getBooksWantToRead = (books) => {
@@ -31,7 +48,9 @@ class BooksApp extends React.Component {
       return book.shelf === "wantToRead"
     })
 
-    return booksWantToRead
+    this.setState(({
+      booksWantToRead
+    }))
   }
 
   getBooksCurrentlyReading = (books) => {
@@ -39,7 +58,9 @@ class BooksApp extends React.Component {
       return book.shelf === "currentlyReading"
     })
    
-    return booksCurrentlyReading
+    this.setState(({
+      booksCurrentlyReading
+    }))
   }
 
   changeBookShelf = (book, newShelf) => {
@@ -53,18 +74,24 @@ class BooksApp extends React.Component {
 
     this.setState({
       books: books
+    }, this.updateBookShelf(book, newShelf))
+  }
+
+  updateBookShelf = (book, newShelf) => {
+    BooksAPI.update(book, newShelf).then( () => {
+      this.getAllBooks()
     })
   }
 
   render() {
     return (
       <div className="app">
-        <Route path = '/search' render = { () => (<SearchBooks></SearchBooks>)}></Route>
+        <Route path = '/search' render = { () => (<SearchBooks changeBookShelf = { this.changeBookShelf }></SearchBooks>)}></Route>
         <Route exact path='/' render = { () => (<HomePage 
             changeBookShelf = { this.changeBookShelf }
-            booksCurrentlyReading = { this.getBooksCurrentlyReading(this.state.books) } 
-            booksRead = { this.getBooksRead(this.state.books) } 
-            booksWantToRead = { this.getBooksWantToRead(this.state.books) }></HomePage>) }>
+            booksCurrentlyReading = { this.state.booksCurrentlyReading } 
+            booksRead = { this.state.booksRead } 
+            booksWantToRead = { this.state.booksWantToRead }></HomePage>) }>
         </Route>
       </div>
     )
